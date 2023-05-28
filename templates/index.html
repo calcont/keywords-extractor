@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Keyword Extractor</title>
+  </head>
+
+  <body>
+    <h1>Keyword Extractor</h1>
+    <form id="keyword-form">
+      <textarea id="text-input" rows="10" cols="50"></textarea>
+      <button type="submit">Extract Keywords</button>
+    </form>
+
+    <div id="keywords"></div>
+
+    <script>
+      document.getElementById('keyword-form').addEventListener('submit', function (event) {
+        event.preventDefault()
+      
+        var text = document.getElementById('text-input').value
+      
+        fetch('/extract', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'text=' + encodeURIComponent(text)
+        })
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (data) {
+            var GotRes = JSON.parse(data.keywords)
+            //console.log(x)
+            var keywords = GotRes['Keyword']
+            var keywordsElement = document.getElementById('keywords')
+            keywordsElement.innerHTML = '<h2>Extracted Keywords:</h2><ul>'
+      
+            for (var i = 0; i < keywords.length; i++) {
+              keywordsElement.innerHTML += '<li>' + keywords[i] + '</li>'
+            }
+      
+            keywordsElement.innerHTML += '</ul>'
+          })
+      })
+    </script>
+  </body>
+</html>
